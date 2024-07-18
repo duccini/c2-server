@@ -18,6 +18,8 @@ export class Project {
     type: 'enum',
     enum: ProjectStatus,
   })
+  status: ProjectStatus;
+
   @Column('date')
   created_at: Date;
 
