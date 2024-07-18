@@ -24,10 +24,10 @@ export class Project {
   created_at: Date;
 
   @Column('text')
-  lead: string;
+  lead: string; //User
 
   @Column('text')
-  teams: string;
+  teams: string; //Teams[]
 
   @Column('date')
   finished_at: Date;
