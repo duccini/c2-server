@@ -10,6 +10,7 @@ import {
 import { ProjectService } from './project.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
+import { UUID } from 'crypto';
 
 @Controller('project')
 export class ProjectController {
@@ -22,21 +23,24 @@ export class ProjectController {
 
   @Get()
   findAll() {
-    return this.projectService.findAll();
+    return this.projectService.findAllProjects();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.projectService.findOne(+id);
+  findOne(@Param('id') id: UUID) {
+    return this.projectService.findProjectById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectService.update(+id, updateProjectDto);
+  updateProject(
+    @Param('id') id: UUID,
+    @Body() updateProjectDto: UpdateProjectDto,
+  ) {
+    return this.projectService.updateProject(id, updateProjectDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectService.remove(+id);
+  deleteProject(@Param('id') id: UUID) {
+    return this.projectService.deleteProject(id);
   }
 }
