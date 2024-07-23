@@ -20,24 +20,24 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('register')
-  create(@Body() createUserDto: CreateUserDto) {
+  createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
   }
 
   @Get('all-users')
-  findAll() {
-    return this.usersService.findAll();
+  getAllUsers() {
+    return this.usersService.getAllUsers();
   }
 
   @Get(':id')
-  async findUser(@Param('id') id: UUID) {
-    return this.usersService.getUser(id);
+  async getUserById(@Param('id') id: UUID) {
+    return this.usersService.getUserById(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: UUID, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: UUID, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.usersService.update(id, updateUserDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: UUID) {

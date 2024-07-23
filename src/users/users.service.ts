@@ -14,7 +14,7 @@ import { UUID } from 'crypto';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import validator from 'validator';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
@@ -43,44 +43,54 @@ export class UsersService {
 
       return this.userRepository.save(userDto);
     } catch (error) {
-      console.log(error.message);
       throw new BadRequestException(error.message);
     }
   }
 
-  async findAll(): Promise<User[] | null> {
+  async getAllUsers(): Promise<User[] | null> {
     return this.userRepository.find();
   }
 
-  async getUser(id: UUID) {
-    const user = await this.userRepository.findOne({
-      where: { id },
-    });
+  async getUserById(id: UUID) {
+    try {
+      if (!validator.isUUID(id)) {
+        throw new BadRequestException('ID inválido.');
+      }
 
-    if (!user)
-      throw new NotFoundException('Usuário não existe no banco de dados!');
+      const user = await this.userRepository.findOne({
+        where: { id },
+      });
 
-    return user;
+      if (!user) throw new NotFoundException('Usuário não encontrado!');
+
+      return user;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  async update(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
-    const user = await this.userRepository.findOneBy({ id });
-    if (!user)
-      throw new NotFoundException(`Usuário com o id: ${id} não foi encontrado`);
+  // async update(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
+  //   try {
+  //    const user = await this.getUserById(id);
 
-    user.email = updateUserDto.email || user.email;
-    user.password = updateUserDto.password || user.password;
-
-    return this.userRepository.save(user);
-  }
+  //     return await this.userRepository.update(id, updateUserDto);
+  //   } catch (error) {
+  //     throw new BadRequestException(error.message);
+  //   }
+  // }
 
   async remove(id: UUID): Promise<string> {
-    const user = await this.userRepository.findBy({ id });
-    if (!user)
-      throw new NotFoundException(`Usuário com o id ${id} não encontrado`);
+    try {
+      if (!validator.isUUID(id)) {
+        throw new BadRequestException('ID inválido.');
+      }
+      const user = await this.getUserById(id);
 
-    this.userRepository.remove(user);
-    return 'Usuário Removido';
+      this.userRepository.remove(user);
+      return 'Usuário Removido';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   findByEmail(userEmail: string): Promise<User> {
