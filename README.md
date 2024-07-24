@@ -12,13 +12,13 @@ Para inicializar o projeto é necessário ter o Docker Engine ou o Docker Deskto
 **1. Clonar o projeto**
 
 ```
-git clone git@github.com:duccini/codigocerto-docker.git
+git clone git@github.com:duccini/c2-server.git
 ```
 
 ou
 
 ```
-git clone https://github.com/duccini/codigocerto-docker.git
+git clone https://github.com/duccini/c2-server.git
 ```
 
 **2. Criar as imagens Docker:**
