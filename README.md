@@ -1,8 +1,8 @@
 ![Banner CodigoCerto](https://utfs.io/f/3b2340e8-5523-4aca-a549-0688fd07450e-j4edu.jfif)
 
-<p align="center"> <strong>Imersão Docker: Docker, AWS e CI</strong></p>
+<p align="center"> <strong>Código Certo - Equipe 02</strong></p>
   
-<p align="center">Entenda porque o Docker é amplamente utilizado na industria de Software construindo uma Aplicação Backend utilizando Docker, hospedando na AWS e automatizada com GitHub Actions.</P>
+<p align="center">Aplicação BackEnd do Projeto 1</P>
 
 ---
 
