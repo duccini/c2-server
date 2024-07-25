@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UUID } from 'crypto';
+import { UserRoles } from '../enums/user-role.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -14,6 +15,12 @@ export class CreateUserDto {
     description: 'Nome e sobrenome do usuário da plataforma',
   })
   readonly username: string;
+
+  @ApiProperty({
+    example: 'Admin',
+    description: 'Tipo de usuário, associado a suas funções na plataforma',
+  })
+  readonly role: UserRoles;
 
   @ApiProperty({
     example: 'email@email.com',

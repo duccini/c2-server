@@ -11,17 +11,27 @@ import { Project } from './entities/project.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UUID } from 'crypto';
 import validator from 'validator';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private projectRepository: Repository<Project>,
+    private readonly usersService: UsersService,
   ) {}
 
   async createProject(createProjectDto: CreateProjectDto) {
     try {
-      return await this.projectRepository.save(createProjectDto);
+      const userLeadId = await this.usersService.getUserById(
+        createProjectDto.leadId,
+      );
+
+      const newProject = createProjectDto;
+
+      newProject.lead = userLeadId;
+
+      return await this.projectRepository.save(newProject);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -51,11 +61,13 @@ export class ProjectService {
 
       const project = await this.projectRepository.findOne({
         where: { id },
+        relations: ['lead'],
       });
 
       if (!project) {
         throw new NotFoundException('Projeto não encontrado...');
       }
+      console.log(project);
 
       return project;
     } catch (error) {

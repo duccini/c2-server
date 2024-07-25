@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
   UnauthorizedException,
@@ -22,16 +23,16 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async createUser(userDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
-      const checkEmailUser = await this.findByEmail(userDto.email);
+      const checkEmailUser = await this.findByEmail(createUserDto.email);
 
       const checkLinkedinUser = await this.userRepository.findOne({
-        where: { linkedin: userDto.linkedin },
+        where: { linkedin: createUserDto.linkedin },
       });
 
       const checkGitHubUser = await this.userRepository.findOne({
-        where: { github: userDto.github },
+        where: { github: createUserDto.github },
       });
 
       if (checkEmailUser) throw new ConflictException('Usuário já cadastrado!');
@@ -41,14 +42,27 @@ export class UsersService {
 
       if (checkGitHubUser) throw new ConflictException('GitHub já cadastrado!');
 
-      return this.userRepository.save(userDto);
+      return this.userRepository.save(createUserDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
   async getAllUsers(): Promise<User[] | null> {
-    return this.userRepository.find();
+    try {
+      const users = await this.userRepository.find();
+
+      if (users.length === 0) {
+        throw new NotFoundException(`Não há usuários cadastrados...`);
+      }
+
+      return users;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException();
+    }
   }
 
   async getUserById(id: UUID) {
@@ -69,15 +83,17 @@ export class UsersService {
     }
   }
 
-  // async update(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
-  //   try {
-  //    const user = await this.getUserById(id);
+  async update(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
+    try {
+      await this.getUserById(id);
 
-  //     return await this.userRepository.update(id, updateUserDto);
-  //   } catch (error) {
-  //     throw new BadRequestException(error.message);
-  //   }
-  // }
+      await this.userRepository.update(id, updateUserDto);
+
+      return await this.getUserById(id);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 
   async remove(id: UUID): Promise<string> {
     try {

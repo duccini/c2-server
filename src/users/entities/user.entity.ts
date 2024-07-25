@@ -1,6 +1,16 @@
 import { Exclude } from 'class-transformer';
 import { UUID } from 'crypto';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { UserRoles } from '../enums/user-role.enum';
+import { Project } from 'src/project/entities/project.entity';
+import { Team } from 'src/teams/entities/team.entity';
 
 @Entity('user')
 export class User {
@@ -9,6 +19,12 @@ export class User {
 
   @Column('text')
   username: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRoles,
+  })
+  role: UserRoles;
 
   @Column('text', { unique: true })
   email: string;
@@ -25,4 +41,10 @@ export class User {
 
   @Column('text') // { unique: true })
   website?: string;
+
+  @OneToMany(() => Project, (project) => project.lead)
+  projects?: Project[];
+
+  // @ManyToMany((_type) => Team, { eager: true })
+  // teams?: Team[];
 }
