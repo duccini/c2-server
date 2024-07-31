@@ -5,12 +5,14 @@ import {
   Entity,
   JoinColumn,
   JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProjectStatus } from '../enums/project-status.enum';
 import { User } from 'src/users/entities/user.entity';
+import { Team } from 'src/teams/entities/team.entity';
 
 @Entity('project')
 export class Project {
@@ -29,16 +31,20 @@ export class Project {
   })
   status: ProjectStatus;
 
+  @Column('text', { nullable: true })
+  urlPhoto?: string;
+
   @Column('date')
   created_at: Date;
+
+  @Column('date')
+  finished_at: Date;
 
   @ManyToOne(() => User, (user) => user.projects, { eager: false })
   @JoinTable()
   lead: User;
 
-  @Column('text')
-  teams: string; //Teams[]
-
-  @Column('date')
-  finished_at: Date;
+  @ManyToMany(() => Team, (team) => team.id, { eager: false })
+  @JoinTable()
+  teams: Team[]; //Teams[]
 }

@@ -1,16 +1,21 @@
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
 import { TeamStack } from '../enum/team-stack.enum';
+import { UUID } from 'crypto';
 
 export class CreateTeamDto {
   @IsNotEmpty()
   @IsArray()
-  readonly members: User[];
+  @IsUUID()
+  membersId: UUID[];
 
   @IsNotEmpty()
-  readonly lead: User;
+  leadId: UUID;
+
+  lead: User;
+  members: User[];
 
   @IsNotEmpty()
   @IsString()
-  readonly teamStack: TeamStack;
+  readonly team_stack: TeamStack;
 }

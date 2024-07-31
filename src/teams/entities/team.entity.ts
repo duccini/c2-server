@@ -4,12 +4,15 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { TeamStack } from '../enum/team-stack.enum';
+import { Project } from 'src/project/entities/project.entity';
 
 @Entity('team')
 export class Team {
@@ -22,17 +25,19 @@ export class Team {
   })
   team_stack: TeamStack;
 
-  @ManyToOne((_type) => User, (user) => user.projects, { eager: false })
+  // @ManyToOne(() => User, (user) => user.id, { eager: false })
+  // lead: User;
+
+  // @ManyToMany(() => User, (user) => user.teams, { eager: false })
+  // members: User[];
+  @ManyToOne(() => User, (user) => user.teams, { eager: false })
   lead: User;
 
-  @ManyToOne((_type) => User, (user) => user.projects, { eager: false })
-  members: User;
+  @ManyToMany(() => User, (user) => user.teams, { eager: false })
+  @JoinTable()
+  members: User[];
 
-  @Column('date')
-  created_at: Date;
-
-  // @Column('text')
-
-  @Column('date')
-  finished_at: Date;
+  @ManyToMany(() => Project, (project) => project.teams, { eager: false })
+  @JoinTable()
+  projects: Project[];
 }
