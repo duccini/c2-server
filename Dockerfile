@@ -1,16 +1,24 @@
+# Etapa de construção
 FROM node:20-alpine
 
-# WORKDIR /usr/src/app
+# Define o diretório de trabalho no contêiner
 WORKDIR /app
 
+# Copia os arquivos package.json e package-lock.json para o diretório de trabalho
+COPY package*.json ./
+
+# Instala as dependências
+RUN npm install
+
+# Copia todo o código da aplicação para o diretório de trabalho
 COPY . .
 
-# RUN yarn install --quiet --no-optional --no-fund --loglevel=error
-RUN yarn install 
+# Compila o código TypeScript
+RUN npm run build
 
-RUN yarn run build
+# Expõe a porta 3000 para acesso externo
+EXPOSE 3000
 
-EXPOSE 10000
-
-CMD ["yarn", "run", "start:prod"]
+# Comando para rodar a aplicação
+CMD ["npm", "run", "start:prod"]
 
