@@ -1,7 +1,7 @@
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as momentTimezone from 'moment-timezone';
-// import { AllExceptionsFilter } from './common/filters/http-expections';
+import { AllExceptionsFilter } from './common/filters/http-expections';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
@@ -14,7 +14,7 @@ async function bootstrap() {
       .format('DD-MM-YYYY HH:mm:ss');
   };
 
-  // app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const config = new DocumentBuilder()
