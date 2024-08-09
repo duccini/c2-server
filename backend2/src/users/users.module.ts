@@ -5,11 +5,13 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
+import { SkillsModule } from 'src/skills/skills.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     forwardRef(() => AuthModule), // Use 'forwardRef' para evitar dependências circulares
+    SkillsModule,
   ],
   providers: [UsersService, JwtService],
   controllers: [UsersController],

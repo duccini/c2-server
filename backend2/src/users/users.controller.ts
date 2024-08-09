@@ -43,7 +43,7 @@ export class UsersController {
   @Patch(':id')
   update(
     @Param('id') id: UUID,
-    @Body(UserRolesValidation)
+    @Body()
     updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.updateUser(id, updateUserDto);

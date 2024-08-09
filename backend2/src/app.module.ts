@@ -9,6 +9,7 @@ import { Project } from './project/entities/project.entity';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { Skill } from './skills/entities/skill.entity';
+import { SkillsModule } from './skills/skills.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { Skill } from './skills/entities/skill.entity';
     UsersModule,
     TeamsModule,
     AuthModule,
+    SkillsModule,
   ],
   controllers: [],
   providers: [],

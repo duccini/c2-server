@@ -18,12 +18,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import validator from 'validator';
 import { plainToClass } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
+import { SkillsService } from 'src/skills/skills.service';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly authService: AuthService,
+    private readonly skillsService: SkillsService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -107,14 +109,23 @@ export class UsersService {
           throw new ConflictException('GitHub já cadastrado!');
       }
 
-      if (updateUserDto.skills) {
+      if (updateUserDto.skillsId) {
         const currentSkills = user.skills || [];
-        console.log(currentSkills);
-        const updatedSkills = [
-          ...new Set([...currentSkills, ...updateUserDto.skills]),
-        ];
-
-        updateUserDto.skills = updatedSkills;
+        updateUserDto.skills = [];
+        const newSkills = await Promise.all(
+          updateUserDto.skillsId.map(async (id) => {
+            return this.skillsService.getBySkill(id);
+          }),
+        );
+        const updatedSkills = [...currentSkills, ...newSkills].filter(
+          (skill, index, self) =>
+            index === self.findIndex((sk) => sk.id === skill.id),
+        );
+        user.skills = updatedSkills;
+        console.log(updateUserDto.skills);
+        const updatedUser = await this.userRepository.save(user);
+        console.log(updatedUser);
+        return updatedUser;
       }
       await this.userRepository.update(id, updateUserDto);
 

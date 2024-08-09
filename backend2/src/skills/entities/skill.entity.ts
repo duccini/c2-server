@@ -1,29 +1,26 @@
-import { Exclude } from 'class-transformer';
-import { UUID } from 'crypto';
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-
-import { EnumSkills } from '../enums/enum-skills.enum';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { EnumStacks } from '../enums/stacks-enum.enum';
 import { User } from 'src/users/entities/user.entity';
 
 @Entity('skill')
 export class Skill {
   @PrimaryGeneratedColumn('uuid')
-  id?: UUID;
+  id: string;
 
+  // @Column({
+  //   type: 'enum',
+  //   enum: EnumStacks,
+  //   array: true,
+  //   nullable: true,
+  // })
+  // stacks: EnumStacks[];
   @Column({
     type: 'enum',
-    enum: EnumSkills,
-    array: true,
+    enum: EnumStacks,
+    nullable: true,
   })
-  skills?: EnumSkills[];
+  stack: EnumStacks;
 
-  @ManyToMany(() => User, (user) => user.skills, {})
-  users?: User[];
+  @ManyToMany(() => User, (user) => user.skills)
+  users: User[];
 }
