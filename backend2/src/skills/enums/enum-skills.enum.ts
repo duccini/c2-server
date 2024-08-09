@@ -1,4 +1,4 @@
-export enum UserSkills {
+export enum EnumSkills {
   BACKEND = 'BACKEND',
   FRONTEND = 'FRONTEND',
   QA = 'QA',

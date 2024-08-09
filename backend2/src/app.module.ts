@@ -8,6 +8,7 @@ import { TeamsModule } from './teams/teams.module';
 import { Project } from './project/entities/project.entity';
 import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { Skill } from './skills/entities/skill.entity';
 
 @Module({
   imports: [
@@ -22,12 +23,12 @@ import { AuthModule } from './auth/auth.module';
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
       autoLoadEntities: true,
-      entities: [Project, User],
+      entities: [Project, User, Skill],
       synchronize: true,
     }),
     UsersModule,
     TeamsModule,
-    AuthModule
+    AuthModule,
   ],
   controllers: [],
   providers: [],

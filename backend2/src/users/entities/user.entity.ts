@@ -3,6 +3,7 @@ import { UUID } from 'crypto';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   OneToMany,
   OneToOne,
@@ -11,7 +12,7 @@ import {
 import { UserRoles } from '../enums/user-role.enum';
 import { Project } from 'src/project/entities/project.entity';
 import { Team } from 'src/teams/entities/team.entity';
-import { UserSkills } from '../enums/user-skills.enum';
+import { Skill } from 'src/skills/entities/skill.entity';
 
 @Entity('user')
 export class User {
@@ -28,14 +29,6 @@ export class User {
   })
   role: UserRoles;
 
-  @Column({
-    type: 'enum',
-    enum: UserSkills,
-    nullable: true,
-    array: true,
-  })
-  skills?: UserSkills[];
-
   @Column('text', { unique: true })
   email: string;
 
@@ -43,13 +36,13 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column('text', { unique: true, default: '' })
+  @Column('text', { unique: true, default: null })
   github?: string;
 
-  @Column('text', { unique: true, default: '' })
+  @Column('text', { unique: true, default: null })
   linkedin?: string;
 
-  @Column('text', { default: '' }) // { unique: true })
+  @Column('text', { default: null }) // { unique: true })
   website?: string;
 
   @OneToMany(() => Project, (project) => project.lead)
@@ -57,4 +50,10 @@ export class User {
 
   @ManyToMany(() => Team, (team) => team.members, { eager: true })
   teams?: Team[];
+
+  @ManyToMany(() => Skill, (skill) => skill.users, {
+    eager: true,
+  })
+  @JoinTable()
+  skills?: Skill[];
 }
