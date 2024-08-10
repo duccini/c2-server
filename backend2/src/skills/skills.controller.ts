@@ -28,7 +28,7 @@ export class SkillsController {
 
   @Get(':id')
   findOne(@Param('id') id: UUID) {
-    return this.skillsService.getBySkill(id);
+    return this.skillsService.getSkillById(id);
   }
 
   @Patch(':id')

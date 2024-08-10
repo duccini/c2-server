@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { EnumStacks } from '../enums/stacks-enum.enum';
 import { User } from 'src/users/entities/user.entity';
 
@@ -7,13 +14,6 @@ export class Skill {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: EnumStacks,
-  //   array: true,
-  //   nullable: true,
-  // })
-  // stacks: EnumStacks[];
   @Column({
     type: 'enum',
     enum: EnumStacks,
@@ -21,6 +21,6 @@ export class Skill {
   })
   stack: EnumStacks;
 
-  @ManyToMany(() => User, (user) => user.skills)
+  @OneToMany(() => User, (user) => user.skill)
   users: User[];
 }

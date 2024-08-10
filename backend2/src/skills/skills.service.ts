@@ -40,7 +40,7 @@ export class SkillsService {
     }
     return skills;
   }
-  async getBySkill(id: UUID): Promise<Skill> {
+  async getSkillById(id: UUID): Promise<Skill> {
     const skill = await this.skillRepository.findOne({
       where: { id: id },
     });

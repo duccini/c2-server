@@ -8,8 +8,8 @@ export class UpdateUserDto {
   username?: string;
   password?: string;
   role?: UserRoles;
-  skills?: Skill[];
-  skillsId?: UUID[];
+  skill?: Skill;
+  skillId?: UUID;
 
   github?: string;
   linkedin?: string;

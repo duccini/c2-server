@@ -5,6 +5,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -51,9 +52,9 @@ export class User {
   @ManyToMany(() => Team, (team) => team.members, { eager: true })
   teams?: Team[];
 
-  @ManyToMany(() => Skill, (skill) => skill.users, {
+  @ManyToOne(() => Skill, (skill) => skill.users, {
     eager: true,
   })
   @JoinTable()
-  skills?: Skill[];
+  skill?: Skill;
 }

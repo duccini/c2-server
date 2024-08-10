@@ -109,22 +109,27 @@ export class UsersService {
           throw new ConflictException('GitHub já cadastrado!');
       }
 
-      if (updateUserDto.skillsId) {
-        const currentSkills = user.skills || [];
-        updateUserDto.skills = [];
-        const newSkills = await Promise.all(
-          updateUserDto.skillsId.map(async (id) => {
-            return this.skillsService.getBySkill(id);
-          }),
+      if (updateUserDto.skillId) {
+        const skill = await this.skillsService.getSkillById(
+          updateUserDto.skillId,
         );
-        const updatedSkills = [...currentSkills, ...newSkills].filter(
-          (skill, index, self) =>
-            index === self.findIndex((sk) => sk.id === skill.id),
-        );
-        user.skills = updatedSkills;
-        console.log(updateUserDto.skills);
+
+        user.skill = skill;
+        // const currentSkills = user.skills || [];
+        // updateUserDto.skills = [];
+        // const newSkills = await Promise.all(
+        //   updateUserDto.skillsId.map(async (id) => {
+        //     return this.skillsService.getBySkill(id);
+        //   }),
+        // );
+        // const updatedSkills = [...currentSkills, ...newSkills].filter(
+        //   (skill, index, self) =>
+        //     index === self.findIndex((sk) => sk.id === skill.id),
+        // );
+        // user.skills = updatedSkills;
+        // console.log(updateUserDto.skills);
         const updatedUser = await this.userRepository.save(user);
-        console.log(updatedUser);
+
         return updatedUser;
       }
       await this.userRepository.update(id, updateUserDto);
