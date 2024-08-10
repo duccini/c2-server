@@ -49,10 +49,22 @@ export class SkillsService {
 
     return skill;
   }
-  update(id: number, updateSkillDto: UpdateSkillDto) {
-    return `This action updates a #${id} skill`;
+
+  async updateSkill(id: UUID, updateSkillDto: UpdateSkillDto) {
+    const checkStack = await this.skillRepository.findOne({
+      where: {
+        stack: updateSkillDto.stack,
+      },
+    });
+
+    if (checkStack) throw new BadRequestException('Stack já cadastrada');
+    await this.skillRepository.update(id, updateSkillDto);
+    return 'Habilidade atualizada.';
   }
-  remove(id: number) {
-    return `This action removes a #${id} skill`;
+  async deleteSkill(id: UUID) {
+    const skill = await this.getSkillById(id);
+
+    await this.skillRepository.remove(skill);
+    return 'Habilidade removida.';
   }
 }

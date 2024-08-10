@@ -32,12 +32,12 @@ export class SkillsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSkillDto: UpdateSkillDto) {
-    return this.skillsService.update(+id, updateSkillDto);
+  updateSkill(@Param('id') id: UUID, @Body() updateSkillDto: UpdateSkillDto) {
+    return this.skillsService.updateSkill(id, updateSkillDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.skillsService.remove(+id);
+  remove(@Param('id') id: UUID) {
+    return this.skillsService.deleteSkill(id);
   }
 }
