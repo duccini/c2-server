@@ -21,6 +21,6 @@ export class Skill {
   })
   stack: EnumStacks;
 
-  @OneToMany(() => User, (user) => user.skill)
+  @OneToMany(() => User, (user) => user.skill, {})
   users: User[];
 }

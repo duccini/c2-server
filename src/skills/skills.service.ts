@@ -10,11 +10,13 @@ import { Skill } from './entities/skill.entity';
 import { Repository } from 'typeorm';
 import { EnumStacks } from './enums/stacks-enum.enum';
 import { UUID } from 'crypto';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class SkillsService {
   constructor(
     @InjectRepository(Skill) private skillRepository: Repository<Skill>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   async createSkill(createSkillDto: CreateSkillDto) {
@@ -32,39 +34,57 @@ export class SkillsService {
     }
   }
 
-  async getAllSkills() {
-    const skills = await this.skillRepository.find();
+  async getAllSkills(): Promise<Skill[]> {
+    try {
+      const skills = await this.skillRepository.find();
 
-    if (skills.length === 0) {
-      throw new NotFoundException(`Não há habilidades cadastrados...`);
+      if (skills.length === 0) {
+        throw new NotFoundException(`Não há habilidades cadastrados...`);
+      }
+      return skills;
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-    return skills;
   }
   async getSkillById(id: UUID): Promise<Skill> {
-    const skill = await this.skillRepository.findOne({
-      where: { id: id },
-    });
+    try {
+      const skill = await this.skillRepository.findOne({
+        where: { id: id },
+      });
 
-    if (!skill) throw new NotFoundException('Habilidade não encontrada');
+      if (!skill) throw new NotFoundException('Habilidade não encontrada');
 
-    return skill;
+      return skill;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async updateSkill(id: UUID, updateSkillDto: UpdateSkillDto) {
-    const checkStack = await this.skillRepository.findOne({
-      where: {
-        stack: updateSkillDto.stack,
-      },
-    });
+    try {
+      const checkStack = await this.skillRepository.findOne({
+        where: {
+          stack: updateSkillDto.stack,
+        },
+      });
 
-    if (checkStack) throw new BadRequestException('Stack já cadastrada');
-    await this.skillRepository.update(id, updateSkillDto);
-    return 'Habilidade atualizada.';
+      if (checkStack) throw new BadRequestException('Stack já cadastrada');
+      await this.skillRepository.update(id, updateSkillDto);
+      return 'Habilidade atualizada.';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
-  async deleteSkill(id: UUID) {
-    const skill = await this.getSkillById(id);
 
-    await this.skillRepository.remove(skill);
-    return 'Habilidade removida.';
+  async deleteSkill(id: UUID) {
+    try {
+      const skill = await this.getSkillById(id);
+      await this.userRepository.update({ id: id }, { skill: null });
+
+      await this.skillRepository.remove(skill);
+      return 'Habilidade removida.';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }

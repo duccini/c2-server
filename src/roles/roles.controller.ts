@@ -12,8 +12,8 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { UUID } from 'crypto';
 
-@Controller('skills')
-export class SkillsController {
+@Controller('roles')
+export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()

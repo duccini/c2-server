@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { UUID } from 'crypto';
@@ -13,32 +17,70 @@ export class RolesService {
   ) {}
   async createRole(createRoleDto: CreateRoleDto) {
     try {
-      // const checkStack = await this.roleRepository.findOne({
-      //   where: {
-      //     stack: createRoleDto.stack,
-      //   },
-      // });
+      const checkRole = await this.roleRepository.findOne({
+        where: {
+          role: createRoleDto.role,
+        },
+      });
 
-      // if (checkStack) throw new BadRequestException('Stack já cadastrada');
+      if (checkRole) throw new BadRequestException('Função já cadastrada');
       return await this.roleRepository.save(createRoleDto);
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
-  getAllRoles() {
-    return `This action returns all roles`;
+  async getAllRoles(): Promise<Role[]> {
+    try {
+      const roles = await this.roleRepository.find();
+
+      if (roles.length === 0) {
+        throw new NotFoundException(`Não há habilidades cadastrados...`);
+      }
+      return roles;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  getRoleById(id: UUID) {
-    return `This action returns a #${id} role`;
+  async getRoleById(id: UUID): Promise<Role> {
+    try {
+      const role = await this.roleRepository.findOne({
+        where: { id: id },
+      });
+
+      if (!role) throw new NotFoundException('Função não encontrada');
+
+      return role;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  updateRole(id: UUID, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
+  async updateRole(id: UUID, updateRoleDto: UpdateRoleDto) {
+    try {
+      const checkRole = await this.roleRepository.findOne({
+        where: {
+          role: updateRoleDto.role,
+        },
+      });
+
+      if (checkRole) throw new BadRequestException('Função já cadastrada');
+      await this.roleRepository.update(id, updateRoleDto);
+      return 'Habilidade atualizada.';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
-  deleteRole(id: UUID) {
-    return `This action removes a #${id} role`;
+  async deleteRole(id: UUID) {
+    try {
+      const role = await this.getRoleById(id);
+
+      await this.roleRepository.remove(role);
+      return 'Habilidade removida.';
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 }
