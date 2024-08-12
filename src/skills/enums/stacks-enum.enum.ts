@@ -1,4 +1,4 @@
-export enum TeamStack {
+export enum EnumStacks {
   BACKEND = 'BACKEND',
   FRONTEND = 'FRONTEND',
   QA = 'QA',

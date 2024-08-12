@@ -7,9 +7,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 
 import { InjectRepository } from '@nestjs/typeorm';
-// import { User } from './entities/user/user.entity';
 import { Repository } from 'typeorm';
 import { UUID } from 'crypto';
 import { User } from './entities/user.entity';
@@ -17,34 +17,34 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import validator from 'validator';
 import { plainToClass } from 'class-transformer';
+import { AuthService } from 'src/auth/auth.service';
+import { SkillsService } from 'src/skills/skills.service';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly authService: AuthService,
+    private readonly skillsService: SkillsService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
       const checkEmailUser = await this.findByEmail(createUserDto.email);
 
-      const checkLinkedinUser = await this.userRepository.findOne({
-        where: { linkedin: createUserDto.linkedin },
-      });
-
-      const checkGitHubUser = await this.userRepository.findOne({
-        where: { github: createUserDto.github },
-      });
-
       if (checkEmailUser) throw new ConflictException('Usuário já cadastrado!');
 
-      if (checkLinkedinUser)
-        throw new ConflictException('Linkedin já cadastrado!');
-
-      if (checkGitHubUser) throw new ConflictException('GitHub já cadastrado!');
-
       const user = this.userRepository.create(createUserDto);
+
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(user.password, salt);
+      user.password = passwordHash;
+
       const savedUser = await this.userRepository.save(user);
+      const { token } = await this.authService.generateJwtToken(
+        savedUser.email,
+        savedUser,
+      );
 
       return plainToClass(User, savedUser);
     } catch (error) {
@@ -87,10 +87,51 @@ export class UsersService {
     }
   }
 
-  async update(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
     try {
-      await this.getUserById(id);
+      const user = await this.getUserById(id);
 
+      if (updateUserDto.linkedin) {
+        const checkLinkedinUser = await this.userRepository.findOne({
+          where: { linkedin: updateUserDto.linkedin },
+        });
+
+        if (checkLinkedinUser)
+          throw new ConflictException('Linkedin já cadastrado!');
+      }
+
+      if (updateUserDto.github) {
+        const checkGitHubUser = await this.userRepository.findOne({
+          where: { github: updateUserDto.github },
+        });
+
+        if (checkGitHubUser)
+          throw new ConflictException('GitHub já cadastrado!');
+      }
+
+      if (updateUserDto.skillId) {
+        const skill = await this.skillsService.getSkillById(
+          updateUserDto.skillId,
+        );
+
+        user.skill = skill;
+        // const currentSkills = user.skills || [];
+        // updateUserDto.skills = [];
+        // const newSkills = await Promise.all(
+        //   updateUserDto.skillsId.map(async (id) => {
+        //     return this.skillsService.getBySkill(id);
+        //   }),
+        // );
+        // const updatedSkills = [...currentSkills, ...newSkills].filter(
+        //   (skill, index, self) =>
+        //     index === self.findIndex((sk) => sk.id === skill.id),
+        // );
+        // user.skills = updatedSkills;
+        // console.log(updateUserDto.skills);
+        const updatedUser = await this.userRepository.save(user);
+
+        return updatedUser;
+      }
       await this.userRepository.update(id, updateUserDto);
 
       return await this.getUserById(id);

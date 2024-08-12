@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { ProjectModule } from './project/project.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmConfigModule } from './configs/typeOrmConfig.module';
@@ -8,6 +7,10 @@ import { UsersModule } from './users/users.module';
 import { TeamsModule } from './teams/teams.module';
 import { Project } from './project/entities/project.entity';
 import { User } from './users/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
+import { Skill } from './skills/entities/skill.entity';
+import { SkillsModule } from './skills/skills.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -22,11 +25,14 @@ import { User } from './users/entities/user.entity';
       password: process.env.PG_PASSWORD,
       database: process.env.PG_DB,
       autoLoadEntities: true,
-      entities: [Project, User],
+      entities: [Project, User, Skill],
       synchronize: true,
     }),
     UsersModule,
     TeamsModule,
+    AuthModule,
+    SkillsModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [],

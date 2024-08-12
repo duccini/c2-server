@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UUID } from 'crypto';
-import { UserRoles } from '../enums/user-role.enum';
+import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -14,43 +14,46 @@ export class CreateUserDto {
     example: 'João Silva',
     description: 'Nome e sobrenome do usuário da plataforma',
   })
+  @IsNotEmpty()
   readonly username: string;
-
-  @ApiProperty({
-    example: 'Admin',
-    description: 'Tipo de usuário, associado a suas funções na plataforma',
-  })
-  readonly role: UserRoles;
 
   @ApiProperty({
     example: 'email@email.com',
     description: 'Email que será utilizado para login pelo usuário',
   })
+  @IsNotEmpty()
+  @IsEmail()
   readonly email: string;
 
   @ApiProperty({
     example: 'Senha@123',
     description: 'Senha utilizada para login na plataforma',
   })
+  @IsNotEmpty()
   password: string;
+  // @ApiProperty({
+  //   example: 'Admin',
+  //   description: 'Tipo de usuário, associado a suas funções na plataforma',
+  // })
+  // readonly role?: UserRoles;
 
-  @ApiProperty({
-    example: 'github.com/JoãoSilva',
-    description: 'Link do github do usuário',
-  })
-  readonly github?: string;
+  // @ApiProperty({
+  //   example: 'github.com/JoãoSilva',
+  //   description: 'Link do github do usuário',
+  // })
+  // readonly github?: string;
 
-  @ApiProperty({
-    example: 'linkedin.com/JoaoSilva',
-    description: 'Link do perfil do linkedin do usuário',
-  })
-  readonly linkedin?: string;
+  // @ApiProperty({
+  //   example: 'linkedin.com/JoaoSilva',
+  //   description: 'Link do perfil do linkedin do usuário',
+  // })
+  // readonly linkedin?: string;
 
-  @ApiProperty({
-    example: 'www.sitedojoaosilva.com',
-    description: 'Link do site do usuário',
-  })
-  readonly website?: string;
+  // @ApiProperty({
+  //   example: 'www.sitedojoaosilva.com',
+  //   description: 'Link do site do usuário',
+  // })
+  // readonly website?: string;
 
   // constructor(
   //   id: UUID,
