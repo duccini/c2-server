@@ -26,21 +26,22 @@ export class UsersService {
     private readonly authService: AuthService
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<{ user: User, token: string }> {
     try {
       const checkEmailUser = await this.findByEmail(createUserDto.email);
-
+  
       if (checkEmailUser) throw new ConflictException('Usuário já cadastrado!');
-
+  
       const user = this.userRepository.create(createUserDto);
-
+  
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(user.password, salt);
       user.password = passwordHash;
-
+  
       const savedUser = await this.userRepository.save(user);
       const { token } = await this.authService.generateJwtToken(savedUser.email, savedUser);
-      return plainToClass(User, savedUser);
+      
+      return { user: plainToClass(User, savedUser), token };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
