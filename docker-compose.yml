@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
   app:
@@ -7,4 +7,5 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      JWT_SECRET: kjdfsghkfdslhnbdfgfjkb
+      DATABASE_URL: postgresql://codigo_certo_0cua_user:7BPR24EEaizswbPjRPsvLIqxFQNTi3GB@dpg-cqqln7d6l47c73b0b5cg-a.oregon-postgres.render.com/codigo_certo_0cua

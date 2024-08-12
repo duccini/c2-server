@@ -27,43 +27,23 @@ export class CreateUserDto {
     description: 'Senha utilizada para login na plataforma',
   })
   password: string;
-  // @ApiProperty({
-  //   example: 'Admin',
-  //   description: 'Tipo de usuário, associado a suas funções na plataforma',
-  // })
-  // readonly role?: UserRoles;
+  @ApiProperty({
+    example: 'Admin',
+     description: 'Tipo de usuário, associado a suas funções na plataforma',
+   })
+   readonly role: UserRoles;
 
-  // @ApiProperty({
-  //   example: 'github.com/JoãoSilva',
-  //   description: 'Link do github do usuário',
-  // })
-  // readonly github?: string;
 
-  // @ApiProperty({
-  //   example: 'linkedin.com/JoaoSilva',
-  //   description: 'Link do perfil do linkedin do usuário',
-  // })
-  // readonly linkedin?: string;
 
-  // @ApiProperty({
-  //   example: 'www.sitedojoaosilva.com',
-  //   description: 'Link do site do usuário',
-  // })
-  // readonly website?: string;
+ constructor(
+    id: UUID,
+    email: string,
+    password: string,
 
-  // constructor(
-  //   id: UUID,
-  //   email: string,
-  //   password: string,
-  //   github: string,
-  //   linkedin: string,
-  //   website: string,
-  // ) {
-  //   this.id = id;
-  //   this.email = email;
-  //   this.password = password;
-  //   this.github = github;
-  //   this.linkedin = linkedin;
-  //   this.website = website;
-  // }
+ ) {
+   this.id = id;
+   this.email = email;
+   this.password = password;
+
+ }
 }

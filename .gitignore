@@ -5,16 +5,19 @@
 /dist
 /node_modules
 /build
-
+create-user.dto.ts
+update-user.dto.ts
 # Logs
+Dockerfille
 logs
+docker-compose.yml
 *.log
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+user.entity.ts
 # OS
 .DS_Store
 

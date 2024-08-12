@@ -34,13 +34,13 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column('text', { unique: true, default: '' })
+  @Column('text', { unique: true, default: null })
   github?: string;
 
-  @Column('text', { unique: true, default: '' })
+  @Column('text', { unique: true, default: null })
   linkedin?: string;
 
-  @Column('text', { default: '' }) // { unique: true })
+  @Column('text', { unique: true, default: null })
   website?: string;
 
   @OneToMany(() => Project, (project) => project.lead)
