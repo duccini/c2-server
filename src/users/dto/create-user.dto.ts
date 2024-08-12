@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UUID } from 'crypto';
+import { UserRoles } from '../enums/user-role.enum';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {

@@ -10,7 +10,6 @@ import { User } from './users/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { Skill } from './skills/entities/skill.entity';
 import { SkillsModule } from './skills/skills.module';
-import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -32,7 +31,6 @@ import { RolesModule } from './roles/roles.module';
     TeamsModule,
     AuthModule,
     SkillsModule,
-    RolesModule,
   ],
   controllers: [],
   providers: [],
