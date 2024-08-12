@@ -30,7 +30,9 @@ export class UsersService {
     private readonly rolesService: RolesService,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<{ user: User; token: string }> {
     try {
       const checkEmailUser = await this.findByEmail(createUserDto.email);
 
@@ -48,7 +50,7 @@ export class UsersService {
         savedUser,
       );
 
-      return plainToClass(User, savedUser);
+      return { user: plainToClass(User, savedUser), token };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
