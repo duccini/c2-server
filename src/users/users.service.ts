@@ -19,6 +19,7 @@ import validator from 'validator';
 import { plainToClass } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
 import { SkillsService } from 'src/skills/skills.service';
+import { RolesService } from 'src/roles/roles.service';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
@@ -26,6 +27,7 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private readonly authService: AuthService,
     private readonly skillsService: SkillsService,
+    private readonly rolesService: RolesService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -115,19 +117,16 @@ export class UsersService {
         );
 
         user.skill = skill;
-        // const currentSkills = user.skills || [];
-        // updateUserDto.skills = [];
-        // const newSkills = await Promise.all(
-        //   updateUserDto.skillsId.map(async (id) => {
-        //     return this.skillsService.getBySkill(id);
-        //   }),
-        // );
-        // const updatedSkills = [...currentSkills, ...newSkills].filter(
-        //   (skill, index, self) =>
-        //     index === self.findIndex((sk) => sk.id === skill.id),
-        // );
-        // user.skills = updatedSkills;
-        // console.log(updateUserDto.skills);
+
+        const updatedUser = await this.userRepository.save(user);
+
+        return updatedUser;
+      }
+      if (updateUserDto.roleId) {
+        const role = await this.rolesService.getRoleById(updateUserDto.roleId);
+
+        user.role = role;
+
         const updatedUser = await this.userRepository.save(user);
 
         return updatedUser;

@@ -14,6 +14,8 @@ export class Role {
   })
   role: EnumRoles;
 
-  @OneToMany(() => User, (user) => user.role)
+  @OneToMany(() => User, (user) => user.role, {
+    cascade: true,
+  })
   users: User[];
 }
