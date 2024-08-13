@@ -88,13 +88,14 @@ export class TeamsService {
       if (updateTeamDto.membersId) {
         const currentMembers = team.members || [];
 
+        // Obtenha os novos times a partir dos IDs fornecidos
         const newMembers = await Promise.all(
           updateTeamDto.membersId.map(async (id) => {
             return this.userService.getUserById(id);
           }),
         );
 
-        // Avoid duplicate members
+        // Combine os times existentes com os novos, evitando duplicatas
         const updatedMembers = [...currentMembers, ...newMembers].filter(
           (member, index, self) =>
             index === self.findIndex((m) => m.id === member.id),

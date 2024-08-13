@@ -3,9 +3,7 @@ import { UUID } from 'crypto';
 import {
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
-  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -13,8 +11,6 @@ import {
 import { UserRoles } from '../enums/user-role.enum';
 import { Project } from 'src/project/entities/project.entity';
 import { Team } from 'src/teams/entities/team.entity';
-import { Skill } from 'src/skills/entities/skill.entity';
-import { Role } from 'src/roles/entities/role.entity';
 
 @Entity('user')
 export class User {
@@ -24,6 +20,13 @@ export class User {
   @Column('text')
   username: string;
 
+  @Column({
+    type: 'enum',
+    enum: UserRoles,
+    nullable: true,
+  })
+  role: UserRoles;
+
   @Column('text', { unique: true })
   email: string;
 
@@ -31,13 +34,13 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column('text', { unique: true, default: null })
+  @Column('text', { unique: true, default: '' })
   github?: string;
 
-  @Column('text', { unique: true, default: null })
+  @Column('text', { unique: true, default: '' })
   linkedin?: string;
 
-  @Column('text', { default: null }) // { unique: true })
+  @Column('text', { default: '' }) // { unique: true })
   website?: string;
 
   @OneToMany(() => Project, (project) => project.lead)
@@ -45,19 +48,4 @@ export class User {
 
   @ManyToMany(() => Team, (team) => team.members, { eager: true })
   teams?: Team[];
-
-  @ManyToOne(() => Skill, (skill) => skill.users, {
-    eager: true,
-    cascade: ['insert', 'update'], // Cascading insert e update
-    onDelete: 'SET NULL', // Define a skill como null no usuário ao deletar a skill
-    onUpdate: 'CASCADE',
-  })
-  @JoinTable()
-  skill?: Skill;
-
-  @ManyToOne(() => Role, (role) => role.users, {
-    eager: true,
-  })
-  @JoinTable()
-  role?: Role;
 }

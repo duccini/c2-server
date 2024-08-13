@@ -1,9 +1,9 @@
 export enum TeamStack {
-  BACKEND = 'BACKEND',
-  FRONTEND = 'FRONTEND',
+  BACKEND = 'Backend',
+  FRONTEND = 'Frontend',
   QA = 'QA',
-  DEVOPS = 'DEVOPS',
+  DEVOPS = 'DevOps',
   UX = 'UX',
-  SCRUM_MASTER = 'SCRUM_MASTER',
-  MOBILE = 'MOBILE',
+  SCRUM_MASTER = 'Scrum Master',
+  MOBILE = 'Mobile',
 }

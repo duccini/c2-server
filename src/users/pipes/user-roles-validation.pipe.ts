@@ -2,24 +2,19 @@ import { BadRequestException } from '@nestjs/common';
 import { UserRoles } from '../enums/user-role.enum';
 
 export class UserRolesValidation {
-  readonly rolesArr = [
-    UserRoles.LEADER,
-    UserRoles.MENTHOR,
-    UserRoles.OWNER,
-    UserRoles.VOLUNTEER,
-  ];
+  readonly statusArr = [UserRoles.ADMIN, UserRoles.COMMON, UserRoles.GUEST];
 
   transform(value: any) {
-    const role = value.role;
-    if (!this.checkRole(role)) {
-      throw new BadRequestException(`${role} não é uma função válida`);
+    const status = value.role;
+    if (!this.checkStatus(status)) {
+      throw new BadRequestException(`${status} não é um status válido`);
     }
 
     return value;
   }
 
-  private checkRole(role: any) {
-    const index = this.rolesArr.indexOf(role);
+  private checkStatus(status: any) {
+    const index = this.statusArr.indexOf(status);
 
     return index !== -1;
   }

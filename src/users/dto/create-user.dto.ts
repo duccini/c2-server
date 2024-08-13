@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { UUID } from 'crypto';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { UserRoles } from '../enums/user-role.enum';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -14,22 +14,18 @@ export class CreateUserDto {
     example: 'João Silva',
     description: 'Nome e sobrenome do usuário da plataforma',
   })
-  @IsNotEmpty()
   readonly username: string;
 
   @ApiProperty({
     example: 'email@email.com',
     description: 'Email que será utilizado para login pelo usuário',
   })
-  @IsNotEmpty()
-  @IsEmail()
   readonly email: string;
 
   @ApiProperty({
     example: 'Senha@123',
     description: 'Senha utilizada para login na plataforma',
   })
-  @IsNotEmpty()
   password: string;
   // @ApiProperty({
   //   example: 'Admin',

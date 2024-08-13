@@ -18,38 +18,29 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import validator from 'validator';
 import { plainToClass } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
-import { SkillsService } from 'src/skills/skills.service';
-import { RolesService } from 'src/roles/roles.service';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly authService: AuthService,
-    private readonly skillsService: SkillsService,
-    private readonly rolesService: RolesService,
+    private readonly authService: AuthService
   ) {}
 
-  async createUser(
-    createUserDto: CreateUserDto,
-  ): Promise<{ user: User; token: string }> {
+  async createUser(createUserDto: CreateUserDto): Promise<{ user: User, token: string }> {
     try {
       const checkEmailUser = await this.findByEmail(createUserDto.email);
-
+  
       if (checkEmailUser) throw new ConflictException('Usuário já cadastrado!');
-
+  
       const user = this.userRepository.create(createUserDto);
-
+  
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(user.password, salt);
       user.password = passwordHash;
-
+  
       const savedUser = await this.userRepository.save(user);
-      const { token } = await this.authService.generateJwtToken(
-        savedUser.email,
-        savedUser,
-      );
-
+      const { token } = await this.authService.generateJwtToken(savedUser.email, savedUser);
+      
       return { user: plainToClass(User, savedUser), token };
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -94,45 +85,23 @@ export class UsersService {
   async updateUser(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
     try {
       const user = await this.getUserById(id);
+      // const checkEmailUser = await this.findByEmail(user.email);
 
-      if (updateUserDto.linkedin) {
-        const checkLinkedinUser = await this.userRepository.findOne({
-          where: { linkedin: updateUserDto.linkedin },
-        });
+      const checkLinkedinUser = await this.userRepository.findOne({
+        where: { linkedin: updateUserDto.linkedin },
+      });
 
-        if (checkLinkedinUser)
-          throw new ConflictException('Linkedin já cadastrado!');
-      }
+      const checkGitHubUser = await this.userRepository.findOne({
+        where: { github: updateUserDto.github },
+      });
 
-      if (updateUserDto.github) {
-        const checkGitHubUser = await this.userRepository.findOne({
-          where: { github: updateUserDto.github },
-        });
+      // if (checkEmailUser) throw new ConflictException('Usuário já cadastrado!');
 
-        if (checkGitHubUser)
-          throw new ConflictException('GitHub já cadastrado!');
-      }
+      if (checkLinkedinUser)
+        throw new ConflictException('Linkedin já cadastrado!');
 
-      if (updateUserDto.skillId) {
-        const skill = await this.skillsService.getSkillById(
-          updateUserDto.skillId,
-        );
+      if (checkGitHubUser) throw new ConflictException('GitHub já cadastrado!');
 
-        user.skill = skill;
-
-        const updatedUser = await this.userRepository.save(user);
-
-        return updatedUser;
-      }
-      if (updateUserDto.roleId) {
-        const role = await this.rolesService.getRoleById(updateUserDto.roleId);
-
-        user.role = role;
-
-        const updatedUser = await this.userRepository.save(user);
-
-        return updatedUser;
-      }
       await this.userRepository.update(id, updateUserDto);
 
       return await this.getUserById(id);

@@ -19,7 +19,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation Backend2')
-    .setDescription('This API provides endpoints for managing projects, teams, and users. It is designed to handle CRUD (Create, Read, Update, Delete) operations efficiently.')
+    .setDescription(
+      'This API provides endpoints for managing projects, teams, and users. It is designed to handle CRUD (Create, Read, Update, Delete) operations efficiently.',
+    )
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
