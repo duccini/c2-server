@@ -28,8 +28,6 @@ export class ProjectService {
 
   async createProject(createProjectDto: CreateProjectDto, file: any) {
     try {
-      console.log(createProjectDto);
-
       const userLead = await this.usersService.getUserById(
         createProjectDto.leadId,
       );
