@@ -40,6 +40,9 @@ export class User {
   @Column('text', { default: null }) // { unique: true })
   website?: string;
 
+  @Column('text', { nullable: true })
+  urlPhoto?: string;
+
   @OneToMany(() => Project, (project) => project.lead)
   projects?: Project[];
 
@@ -57,6 +60,9 @@ export class User {
 
   @ManyToOne(() => Role, (role) => role.users, {
     eager: true,
+    cascade: ['insert', 'update'], // Cascading insert e update
+    onDelete: 'SET NULL', // Define a skill como null no usuário ao deletar a skill
+    onUpdate: 'CASCADE',
   })
   @JoinTable()
   role?: Role;

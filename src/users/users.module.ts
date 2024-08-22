@@ -7,6 +7,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { JwtService } from '@nestjs/jwt';
 import { SkillsModule } from 'src/skills/skills.module';
 import { RolesModule } from 'src/roles/roles.module';
+import { AwsModule } from 'src/aws/aws.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RolesModule } from 'src/roles/roles.module';
     forwardRef(() => AuthModule), // Use 'forwardRef' para evitar dependências circulares
     SkillsModule,
     RolesModule,
+    AwsModule,
   ],
   providers: [UsersService, JwtService],
   controllers: [UsersController],

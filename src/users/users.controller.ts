@@ -9,6 +9,8 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 
@@ -18,6 +20,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRolesValidation } from './pipes/user-roles-validation.pipe';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('users')
 @Controller('users')
@@ -41,12 +44,14 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   update(
     @Param('id') id: UUID,
     @Body()
     updateUserDto: UpdateUserDto,
+    @UploadedFile() file,
   ) {
-    return this.usersService.updateUser(id, updateUserDto);
+    return this.usersService.updateUser(id, updateUserDto, file);
   }
 
   @UseGuards(JwtAuthGuard)

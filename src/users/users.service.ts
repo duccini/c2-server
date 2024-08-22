@@ -20,6 +20,7 @@ import { plainToClass } from 'class-transformer';
 import { AuthService } from 'src/auth/auth.service';
 import { SkillsService } from 'src/skills/skills.service';
 import { RolesService } from 'src/roles/roles.service';
+import { AwsService } from 'src/aws/aws.service';
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
@@ -28,6 +29,7 @@ export class UsersService {
     private readonly authService: AuthService,
     private readonly skillsService: SkillsService,
     private readonly rolesService: RolesService,
+    private readonly awsService: AwsService,
   ) {}
 
   async createUser(
@@ -91,7 +93,11 @@ export class UsersService {
     }
   }
 
-  async updateUser(id: UUID, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(
+    id: UUID,
+    updateUserDto: UpdateUserDto,
+    file?: any,
+  ): Promise<User> {
     try {
       const user = await this.getUserById(id);
 
@@ -133,8 +139,13 @@ export class UsersService {
 
         return updatedUser;
       }
-      await this.userRepository.update(id, updateUserDto);
 
+      const urlPhotoUser = await this.awsService.uploadFile(file, id);
+      console.log(urlPhotoUser.url);
+      updateUserDto.urlPhoto = urlPhotoUser.url;
+      console.log(user);
+
+      await this.userRepository.update(id, updateUserDto);
       return await this.getUserById(id);
     } catch (error) {
       throw new BadRequestException(error.message);
