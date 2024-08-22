@@ -116,6 +116,13 @@ export class ProjectService {
         );
 
         project.teams = updatedTeams;
+        if (updateProjectDto.status) {
+          project.status = updateProjectDto.status;
+        }
+        if (updateProjectDto.title) {
+          project.title = updateProjectDto.title;
+        }
+        console.log(project);
         const updatedProject = await this.projectRepository.save(project);
         return updatedProject;
       }

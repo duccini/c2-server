@@ -17,4 +17,5 @@ export class UpdateUserDto {
   github?: string;
   linkedin?: string;
   website?: string;
+  urlPhoto?: string;
 }

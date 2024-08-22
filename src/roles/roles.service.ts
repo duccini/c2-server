@@ -9,11 +9,13 @@ import { UUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
 import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Role) private roleRepository: Repository<Role>,
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
   async createRole(createRoleDto: CreateRoleDto) {
     try {
@@ -73,9 +75,20 @@ export class RolesService {
     }
   }
 
+  // async deleteRole(id: UUID) {
+  //   try {
+  //     const role = await this.getRoleById(id);
+
+  //     await this.roleRepository.remove(role);
+  //     return 'Habilidade removida.';
+  //   } catch (error) {
+  //     throw new BadRequestException(error.message);
+  //   }
+  // }
   async deleteRole(id: UUID) {
     try {
       const role = await this.getRoleById(id);
+      await this.userRepository.update({ id: id }, { role: null });
 
       await this.roleRepository.remove(role);
       return 'Habilidade removida.';
