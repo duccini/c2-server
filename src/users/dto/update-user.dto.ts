@@ -8,6 +8,8 @@ import { Role } from 'src/roles/entities/role.entity';
 export class UpdateUserDto {
   username?: string;
   password?: string;
+  email?: string;
+
 
   role?: Role;
   roleId?: UUID;

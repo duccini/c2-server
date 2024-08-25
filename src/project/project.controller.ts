@@ -20,7 +20,9 @@ import { Project } from './entities/project.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AwsService } from 'src/aws/aws.service';
 import { ProjectStatus } from './enums/project-status.enum';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('projects')
 @Controller('projects')
 export class ProjectController {
   constructor(

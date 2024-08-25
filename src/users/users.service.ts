@@ -21,6 +21,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { SkillsService } from 'src/skills/skills.service';
 import { RolesService } from 'src/roles/roles.service';
 import { AwsService } from 'src/aws/aws.service';
+
 @Injectable()
 export class UsersService {
   logger = new Logger(UsersService.name);
@@ -42,8 +43,8 @@ export class UsersService {
 
       const user = this.userRepository.create(createUserDto);
 
-      const salt = await bcrypt.genSalt();
-      const passwordHash = await bcrypt.hash(user.password, salt);
+      //HASH PADRONIZADO
+      const passwordHash = await this.hashPassword(createUserDto.password);
       user.password = passwordHash;
 
       const savedUser = await this.userRepository.save(user);
@@ -101,23 +102,48 @@ export class UsersService {
     try {
       const user = await this.getUserById(id);
 
-      if (updateUserDto.linkedin) {
-        const checkLinkedinUser = await this.userRepository.findOne({
-          where: { linkedin: updateUserDto.linkedin },
-        });
+     // ATUALIZAÇÃO E VERICICAÇÃO DE EMAIL
+     if (updateUserDto.email && updateUserDto.email !== user.email) {
+      const checkEmailUser = await this.userRepository.findOne({
+        where: { email: updateUserDto.email },
+      });
 
-        if (checkLinkedinUser)
-          throw new ConflictException('Linkedin já cadastrado!');
+      if (checkEmailUser) {
+        throw new ConflictException('E-mail já cadastrado!');
       }
+      user.email = updateUserDto.email;
+    }
 
-      if (updateUserDto.github) {
-        const checkGitHubUser = await this.userRepository.findOne({
-          where: { github: updateUserDto.github },
-        });
+    // // ATUALIZAÇÃO E VERICICAÇÃO SENHA
+    if (updateUserDto.password) {
 
-        if (checkGitHubUser)
-          throw new ConflictException('GitHub já cadastrado!');
+      user.password = await this.hashPassword(updateUserDto.password);
+    }
+
+    // // ATUALIZAÇÃO E VERICICAÇÃO LINKEDIN
+    if (updateUserDto.linkedin && updateUserDto.linkedin !== user.linkedin) {
+      const checkLinkedinUser = await this.userRepository.findOne({
+        where: { linkedin: updateUserDto.linkedin },
+      });
+
+      if (checkLinkedinUser) {
+        throw new ConflictException('LinkedIn já cadastrado!');
       }
+      user.linkedin = updateUserDto.linkedin;
+    }
+
+    // // ATUALIZAÇÃO E VERICICAÇÃO GITHUB
+    if (updateUserDto.github && updateUserDto.github !== user.github) {
+      const checkGitHubUser = await this.userRepository.findOne({
+        where: { github: updateUserDto.github },
+      });
+
+      if (checkGitHubUser) {
+        throw new ConflictException('GitHub já cadastrado!');
+      }
+      user.github = updateUserDto.github;
+    }
+
 
       if (updateUserDto.skillId) {
         const skill = await this.skillsService.getSkillById(
@@ -182,4 +208,27 @@ export class UsersService {
     }
     return user;
   }
+
+
+  async findByResetToken(token: string): Promise<User | undefined>{
+
+  return this.userRepository.findOne({
+    where: {resetToken : token}
+  })
+
+  };
+   
+
+
+ 
+  //METODO PARA SAVAR ALTEREÇOES 
+  async save(user : User): Promise<User>{
+
+    return this.userRepository.save(user);
+  }
+    // NMETODO PARA HASH DE SENHA
+    async hashPassword(password: string): Promise<string> {
+      const salt = await bcrypt.genSalt();
+      return bcrypt.hash(password, salt);
+    }
 }

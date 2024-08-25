@@ -12,7 +12,8 @@ import { CreateTeamDto } from './dto/create-team.dto';
 import { UpdateTeamDto } from './dto/update-team.dto';
 import { UUID } from 'crypto';
 import { TeamStacksValidation } from './pipes/team-stacks-validation.pipe';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('teams')
 @Controller('teams')
 export class TeamsController {
   constructor(private readonly teamsService: TeamsService) {}

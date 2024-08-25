@@ -37,12 +37,15 @@ export class UsersController {
   getAllUsers() {
     return this.usersService.getAllUsers();
   }
-
+  
   @Get(':id')
   async getUserById(@Param('id') id: UUID) {
     return this.usersService.getUserById(id);
   }
 
+
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(
