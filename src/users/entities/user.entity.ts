@@ -42,6 +42,14 @@ export class User {
 
   @Column('text', { nullable: true })
   urlPhoto?: string;
+  
+// DADOS DE RESET DE SENHA 
+  @Column({nullable: true})
+  resetToken?: string;
+
+  @Column({nullable : true})
+  resetTokenExpires?:Date;
+ 
 
   @OneToMany(() => Project, (project) => project.lead)
   projects?: Project[];

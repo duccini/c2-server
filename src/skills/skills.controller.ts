@@ -11,7 +11,8 @@ import { SkillsService } from './skills.service';
 import { CreateSkillDto } from './dto/create-skill.dto';
 import { UpdateSkillDto } from './dto/update-skill.dto';
 import { UUID } from 'crypto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('users')
 @Controller('skills')
 export class SkillsController {
   constructor(private readonly skillsService: SkillsService) {}
