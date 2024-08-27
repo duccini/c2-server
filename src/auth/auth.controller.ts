@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { AuthPayloadDto } from './dto/auth.dto';
 import { UsersService } from 'src/users/users.service';
 import { ApiTags } from '@nestjs/swagger';
+import { RequestPayloadDto } from './dto/request.dto';
+import { resetPasswordPayloadDto } from './dto/resetPasswrod.dto';
 
 @ApiTags('users')
 @Controller('auth')
@@ -31,7 +33,8 @@ export class AuthController {
 
   //ROTA PARA ENVIAR EMAIL DE RESET DE SENHA
   @Post('request-password-reset')
-  async requestPasswordReset(@Body ('email') email: string){
+
+  async requestPasswordReset(@Body() {email}: RequestPayloadDto){
 
    try {
     const user = await this.usersService.findByEmail(email);
@@ -54,8 +57,7 @@ export class AuthController {
   //ROTA DE RESETAR SENHA 
   @Post('reset-password')
   async resetPassword(
-  @Body('codigo') token: string,
-  @Body('password') newPassword: string,
+     @Body() {token,newPassword}: resetPasswordPayloadDto
 ) {
   const user = await this.usersService.findByResetToken(token);
   if (!user || user.resetTokenExpires < new Date()) {

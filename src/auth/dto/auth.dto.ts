@@ -7,10 +7,12 @@ export class AuthPayloadDto{
         example: 'email@email.com',
         description: 'Email que será utilizado para login pelo usuário',
       })
-      readonly email: string;
+      readonly email?: string;
       @ApiProperty({
         example: 'Senha@123',
         description: 'Senha utilizada para login na plataforma',
       })
-      readonly password: string;    
+      readonly password?: string;    
+
+  
 }
