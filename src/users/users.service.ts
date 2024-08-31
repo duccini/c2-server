@@ -102,7 +102,7 @@ export class UsersService {
     try {
       const user = await this.getUserById(id);
 
-     // ATUALIZAÇÃO E VERICICAÇÃO DE EMAIL
+     // ATUALIZAÇÃO E VERIFICAÇÃO DE EMAIL
      if (updateUserDto.email && updateUserDto.email !== user.email) {
       const checkEmailUser = await this.userRepository.findOne({
         where: { email: updateUserDto.email },
@@ -114,13 +114,13 @@ export class UsersService {
       user.email = updateUserDto.email;
     }
 
-    // // ATUALIZAÇÃO E VERICICAÇÃO SENHA
+    // // ATUALIZAÇÃO E VERIFICAÇÃO SENHA
     if (updateUserDto.password) {
 
       user.password = await this.hashPassword(updateUserDto.password);
     }
 
-    // // ATUALIZAÇÃO E VERICICAÇÃO LINKEDIN
+    // // ATUALIZAÇÃO E VERIFICAÇÃO LINKEDIN
     if (updateUserDto.linkedin && updateUserDto.linkedin !== user.linkedin) {
       const checkLinkedinUser = await this.userRepository.findOne({
         where: { linkedin: updateUserDto.linkedin },
@@ -132,7 +132,7 @@ export class UsersService {
       user.linkedin = updateUserDto.linkedin;
     }
 
-    // // ATUALIZAÇÃO E VERICICAÇÃO GITHUB
+    // // ATUALIZAÇÃO E VERIFICAÇÃO GITHUB
     if (updateUserDto.github && updateUserDto.github !== user.github) {
       const checkGitHubUser = await this.userRepository.findOne({
         where: { github: updateUserDto.github },
@@ -226,7 +226,7 @@ export class UsersService {
 
     return this.userRepository.save(user);
   }
-    // NMETODO PARA HASH DE SENHA
+    //METODO PARA HASH DE SENHA
     async hashPassword(password: string): Promise<string> {
       const salt = await bcrypt.genSalt();
       return bcrypt.hash(password, salt);

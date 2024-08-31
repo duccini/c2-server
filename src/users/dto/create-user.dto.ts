@@ -3,11 +3,7 @@ import { UUID } from 'crypto';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty({
-    example: '',
-    description:
-      'ID não obrigatório para a criação do usuário, será gerado automaticamente pelo banco de dados.',
-  })
+
   readonly id?: UUID;
 
   @ApiProperty({
