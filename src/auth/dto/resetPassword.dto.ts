@@ -1,14 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 
-export class resetPasswordPayloadDto{
+export class ResetPasswordPayloadDto{
 
 
       @ApiProperty({
         example: 'Senha@123',
         description: 'Senha utilizada para login na plataforma',
       })
-      readonly newPassword?: string;    
+      readonly password?: string;    
 
       @ApiProperty({
        example: "123456",
